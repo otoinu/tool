@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HTML Loader</title>
+
+<style>
+/* ==========================================================
+   モノトーンデザイン
+   完全な白(#fff)・黒(#000)は使用しない。
+   ========================================================== */
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:#ededed;
+    color:#2d2d2d;
+    font-family:sans-serif;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#panel{
+
+    width:min(720px,90vw);
+
+    background:#e2e2e2;
+
+    border:1px solid #9c9c9c;
+
+    border-radius:18px;
+
+    padding:32px;
+
+    box-sizing:border-box;
+
+    text-align:center;
+
+    box-shadow:
+        0 3px 8px rgba(80,80,80,.12);
+}
+
+h1{
+    margin-top:0;
+    font-size:26px;
+    font-weight:500;
+}
+
+p{
+    color:#5a5a5a;
+    line-height:1.7;
+}
+
+#drop{
+
+    margin-top:24px;
+
+    padding:60px 20px;
+
+    border:2px dashed #8f8f8f;
+
+    border-radius:16px;
+
+    background:#dcdcdc;
+
+    transition:.15s;
+}
+
+#drop.drag{
+    background:#cfcfcf;
+}
+
+button{
+
+    margin-top:18px;
+
+    border:none;
+
+    border-radius:999px;
+
+    padding:11px 22px;
+
+    background:#777;
+
+    color:#ececec;
+
+    cursor:pointer;
+
+    font-size:15px;
+}
+
+button:hover{
+    background:#666;
+}
+
+input{
+    display:none;
+}
+
+.small{
+    margin-top:15px;
+    font-size:13px;
+    color:#6b6b6b;
+}
+</style>
+</head>
+
+<body>
+
+<div id="panel">
+
+<h1>HTML Loader</h1>
+
+<p>
+
+HTMLファイルを読み込み、このページをその内容で置き換えます。<br>
+
+script要素も実行されます。
+
+</p>
+
+<div id="drop">
+
+ドラッグ＆ドロップ<br><br>
+
+または
+
+<br>
+
+<button id="openButton">
+
+ファイルを選択
+
+</button>
+
+</div>
+
+<div class="small">
+
+許可する拡張子：<br>
+
+.html / .htm / .txt / 拡張子なし
+
+</div>
+
+<input
+id="file"
+type="file"
+accept=".html,.htm,.txt"
+/>
+
+</div>
+
+<script>
+
+/* ==========================================================
+   HTML Loader
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   許可される拡張子判定
+   ---------------------------------------------------------- */
+
+function allowed(name){
+
+    const i=name.lastIndexOf(".");
+
+    if(i===-1){
+
+        return true;
+
+    }
+
+    const ext=name.substring(i).toLowerCase();
+
+    return [
+        ".html",
+        ".htm",
+        ".txt"
+    ].includes(ext);
+
+}
+
+
+/* ----------------------------------------------------------
+   HTML構文チェック
+
+   HTMLは厳密な構文エラーを返さないため、
+
+   DOMParserでDocumentを生成できるか確認する。
+
+   ---------------------------------------------------------- */
+
+function validate(html){
+
+    try{
+
+        const parser=new DOMParser();
+
+        const doc=parser.parseFromString(
+            html,
+            "text/html"
+        );
+
+        if(!doc.documentElement){
+
+            throw "parse";
+
+        }
+
+        return true;
+
+    }catch(e){
+
+        return false;
+
+    }
+
+}
+
+
+/* ----------------------------------------------------------
+   読み込んだHTMLを現在のページへ適用する
+
+   document.open()
+
+   ↓
+
+   document.write()
+
+   ↓
+
+   document.close()
+
+   とすることで、
+
+   現在のDocument全体を新しいHTMLへ置換する。
+
+   この方法ではscriptも通常通り実行される。
+
+   ---------------------------------------------------------- */
+
+function replaceDocument(html){
+
+    document.open();
+
+    document.write(html);
+
+    document.close();
+
+}
+
+
+/* ----------------------------------------------------------
+   FileReader処理
+
+   ---------------------------------------------------------- */
+
+function load(file){
+
+    if(!allowed(file.name)){
+
+        alert("許可されていない拡張子です。");
+
+        return;
+
+    }
+
+    const reader=new FileReader();
+
+    reader.onload=()=>{
+
+        const html=reader.result;
+
+        if(!validate(html)){
+
+            alert("HTMLを解析できません。");
+
+            return;
+
+        }
+
+        replaceDocument(html);
+
+    };
+
+    reader.readAsText(file);
+
+}
+
+
+/* ----------------------------------------------------------
+   input選択
+
+   ---------------------------------------------------------- */
+
+const input=document.getElementById("file");
+
+document.getElementById("openButton").onclick=()=>{
+
+    input.click();
+
+};
+
+input.onchange=e=>{
+
+    if(e.target.files.length){
+
+        load(e.target.files[0]);
+
+    }
+
+};
+
+
+/* ----------------------------------------------------------
+   ドラッグ＆ドロップ
+
+   ---------------------------------------------------------- */
+
+const drop=document.getElementById("drop");
+
+drop.ondragover=e=>{
+
+    e.preventDefault();
+
+    drop.classList.add("drag");
+
+};
+
+drop.ondragleave=e=>{
+
+    e.preventDefault();
+
+    drop.classList.remove("drag");
+
+};
+
+drop.ondrop=e=>{
+
+    e.preventDefault();
+
+    drop.classList.remove("drag");
+
+    if(e.dataTransfer.files.length){
+
+        load(e.dataTransfer.files[0]);
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>
