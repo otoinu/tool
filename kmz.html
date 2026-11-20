@@ -496,7 +496,7 @@
 <body>
   <a href="./index.html">Tools</a>
   <h1>PNG / GeoTIFF to KMZ</h1>
-  <p class="intro">PNGと位置情報、またはGeoTIFFからGoogle Earth用のKMZを作成します。GeoTIFFは選択すると自動で変換します。EPSG:4326 / 3857 と WGS84 UTM（32601–32660、32701–32760）に対応しています。画像ファイルはサーバーに送信されずブラウザー内で処理されます（変換ライブラリの読み込みにはネット接続が必要です）。</p>
+  <p class="intro">PNGと位置情報, またはGeoTIFFからGoogle Earth用のKMZを作成します. GeoTIFFは選択すると自動で変換します. EPSG:4326 / 3857 と WGS84 UTM（32601–32660、32701–32760）に対応しています. 画像ファイルはサーバーに送信されずブラウザー内で処理されます.</p>
 
   <main class="panel">
     <label class="drop-zone" id="raster-drop" for="raster-file">
@@ -510,8 +510,8 @@
       <h2>PNGの位置情報</h2>
       <label class="drop-zone" id="world-drop" for="world-file">
         <input id="world-file" type="file" accept=".pgw,.wld,.jgw,.tfw,.txt">
-        <span class="drop-title">world fileを選択 / ドロップ（任意）</span>
-        <span class="drop-hint">.pgw, .wld などの6行形式（座標はWGS84の経度・緯度として扱います）</span>
+        <span class="drop-title">world fileを選択 / ドロッ (任意)</span>
+        <span class="drop-hint">.pgw, .wld などの6行形式 (WGS84)</span>
       </label>
       <p id="world-file-name" aria-live="polite"></p>
       <button class="button" id="clear-world-file" type="button" hidden>world fileを解除して座標入力に切替</button>
@@ -519,7 +519,7 @@
 
     <section class="options" id="coordinate-section" hidden>
       <h2>PNGの頂点座標</h2>
-      <span class="help">画像の四隅を囲む緯度・経度（十進法）を入力してください。</span>
+      <span class="help">画像の四隅を囲む緯度・経度(十進法)を入力してください.</span>
       <div class="coordinates">
         <div class="field"><label for="north">北端の緯度</label><input id="north" type="number" step="any" placeholder="例: 35.7"></div>
         <div class="field"><label for="south">南端の緯度</label><input id="south" type="number" step="any" placeholder="例: 35.6"></div>
